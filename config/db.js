@@ -22,13 +22,23 @@ module.exports = {
 
 const {Student} = require('./../models/student');
 const {Group} = require('./../models/group');
+const {Documentation} = require('./../models/documentation');
+const {Project} = require('./../models/project');
 
 //Associations
 
 Group.hasMany(Student);
 Student.belongsTo(Group);
 
-//sequelize.sync();
+//One-to-one
+Student.hasOne(Documentation);
+
+//Many-to-many
+Student.belongsToMany(Project, {through: 'StudentProject'});
+Project.belongsToMany(Student, {through: 'StudentProject'});
+
+
+sequelize.sync();
 
 
 //Callback -> Promise -> async/await
@@ -91,12 +101,64 @@ Student.belongsTo(Group);
 
         //Update Student name
 
+      //  let benji = await Student.findOne({
+      //      where: {
+      //          name: 'benji'
+      //      }
+      //  });
+      //  benji.name = 'Benji';
+      //  await benji.save();
+        
+
+    //    let erick = await Student.findOne({
+      //      where: {
+      //         name: 'Erick'
+      //      }
+      //  })
+    //
+     //   await erick.destroy();
+      //  
+
+
+
+        //Create and "link" one-to-one
+
+  //  let benji = await Student.findOne({
+   //     where: {
+   //         name: 'benji'
+   //     }
+  //  });
+
+  //  let benjisDocumentation = await Documentation.create({
+  //      name: 'Benji Documentation'
+  //  });
+
+  //  benji.setDocumentation(benjisDocumentation);
+  //  await benji.save();
+    
+
+        //Create and assign a Project
+
+        let pr1 = await Project.create({
+            name: 'Proyecto Parcial 1'
+        });
+    
+        let pr2 = await Project.create({
+            name: 'Proyecto Parcial 2'
+        });
+    
         let benji = await Student.findOne({
             where: {
-                name: 'benji'
+                name: 'Benji'
             }
         });
-        benji.name = 'Benji';
-        await benji.save();
+    
+        let pedro = await Student.findOne({
+            where: {
+                name: 'Pedro'
+            }
+        });
+    
+        pr1.setStudents([benji, pedro]);
         
 })();
